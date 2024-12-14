@@ -41,7 +41,9 @@ const MEDICAL_INFO = "medicalInfo";
 const EMERGENCY_CONTACTS = "emergencyContacts";
 const PAYMENT_INFO = "paymentInfo";
 
-function getTabStyle(formState: FormState<any>) {
+function getTabStyle(
+  formState: FormState<CamperInfo | MedicalInfo | EmergencyContact>
+) {
   if (formState.isDirty && formState.isValid && formState.isSubmitted) {
     return "text-green-500";
   }
@@ -124,10 +126,11 @@ const MullyForm = () => {
   } = useFormState(contactForm);
 
   const invalidForms = useMemo(() => {
-    let forms = [];
-    !isCamperFormSubmitSuccessful && forms.push("Camper Info");
-    !isMedicalFormSubmitSuccessful && forms.push("Medical Info");
-    !isEmergencyContactInfoSubmitSuccessful && forms.push("Emergency Contacts");
+    const forms = [];
+    if (!isCamperFormSubmitSuccessful) forms.push("Camper Info");
+    if (!isMedicalFormSubmitSuccessful) forms.push("Medical Info");
+    if (!isEmergencyContactInfoSubmitSuccessful)
+      forms.push("Emergency Contacts");
     return forms;
   }, [
     isCamperFormSubmitSuccessful,
@@ -141,9 +144,9 @@ const MullyForm = () => {
       medicalForm.trigger();
       contactForm.trigger();
 
-      !isCamperFormSubmitted && camperForm.handleSubmit(setCamperData)();
-      !isMedicalFormSubmitted && medicalForm.handleSubmit(setMedicalData)();
-      !isEmergencyContactInfoSubmitted &&
+      if (!isCamperFormSubmitted) camperForm.handleSubmit(setCamperData)();
+      if (!isMedicalFormSubmitted) medicalForm.handleSubmit(setMedicalData)();
+      if (!isEmergencyContactInfoSubmitted)
         contactForm.handleSubmit(setContactInfo)();
     }
   }, [

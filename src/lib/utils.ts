@@ -14,7 +14,7 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
-async function submit(formValues: any) {
+async function submit(formValues: AllFormValues) {
   return await fetch("/api/form", {
     method: "POST",
     body: JSON.stringify(formValues),

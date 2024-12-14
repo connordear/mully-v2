@@ -11,13 +11,13 @@ import { convertToTitleCase } from "@/lib/stringUtils";
 import { RegistrationInfo } from "@/lib/types";
 import {
   ReactNode,
+  RefObject,
   createRef,
-  useCallback,
   useEffect,
   useMemo,
   useState,
 } from "react";
-import ReactToPrint from "react-to-print";
+import { useReactToPrint } from "react-to-print";
 import { Button } from "../ui/button";
 import CopyButton from "../ui/copy-button";
 import {
@@ -54,7 +54,7 @@ type RegistrationsTablePropsType = {
 export type TableColumn<T> = {
   key: keyof T;
   header: ReactNode;
-  render?: (row: RegistrationInfo) => string | JSX.Element;
+  render?: (row: RegistrationInfo) => string | ReactNode;
   headerStyle?: React.CSSProperties;
   cellStyle?: React.CSSProperties;
 };
@@ -62,8 +62,8 @@ export type TableColumn<T> = {
 const RegistrationsTable = ({
   registrations: data,
 }: RegistrationsTablePropsType) => {
-  const registrationPrintRef = createRef<HTMLDivElement>();
-  const medicalPrintRef = createRef<HTMLDivElement>();
+  const registrationPrintRef = createRef<Element>();
+  const medicalPrintRef = createRef<Element>();
   const [selectedTab, setSelectedTab] = useState<string>();
   const { data: programs } = useGetPrograms();
   const selectedProgram = useMemo(
@@ -102,7 +102,7 @@ const RegistrationsTable = ({
   const programRegistrationsEmails = useMemo(() => {
     const emails: string[] = [];
     registrations.forEach((r) => {
-      !!r.email && emails.push(r.email);
+      if (r.email) emails.push(r.email);
     });
     return emails.join("; ");
   }, [registrations]);
@@ -215,11 +215,12 @@ const RegistrationsTable = ({
 
   const allColumns = [...registrationColumns, ...defaultColumns];
 
-  const printTrigger = useCallback(() => <Button>Print</Button>, []);
-  const printContent = useCallback(
-    () => registrationPrintRef.current,
-    [registrationPrintRef.current, registrations, selectedProgram]
-  );
+  const reactToPrintFnMedical = useReactToPrint({
+    contentRef: medicalPrintRef as RefObject<HTMLDivElement>,
+  });
+  const reactToPrintFnRegistration = useReactToPrint({
+    contentRef: registrationPrintRef as RefObject<HTMLDivElement>,
+  });
 
   return (
     <div
@@ -258,7 +259,13 @@ const RegistrationsTable = ({
             ))}
           </SelectContent>
         </Select>
-        <ReactToPrint
+        <Button onClick={() => reactToPrintFnRegistration()}>
+          Print Camper Info
+        </Button>
+        <Button onClick={() => reactToPrintFnMedical()}>
+          Print Medical Info
+        </Button>
+        {/* <ReactToPrint
           documentTitle={selectedProgram?.name}
           trigger={() => <Button>Print Camper Info</Button>}
           content={() => registrationPrintRef.current}
@@ -269,7 +276,7 @@ const RegistrationsTable = ({
           trigger={() => <Button>Print Medical Info</Button>}
           content={() => medicalPrintRef.current}
           pageStyle={"@page { size: auto; margin; }"}
-        />
+        /> */}
       </div>
       <div
         style={{
@@ -277,12 +284,12 @@ const RegistrationsTable = ({
         }}
       >
         <RegistrationPrintout
-          ref={registrationPrintRef}
+          ref={registrationPrintRef as RefObject<HTMLDivElement>}
           data={registrations}
           program={selectedProgram}
         />
         <MedicalPrintout
-          ref={medicalPrintRef}
+          ref={medicalPrintRef as RefObject<HTMLDivElement>}
           data={registrations}
           program={selectedProgram}
         />

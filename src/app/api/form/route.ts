@@ -1,7 +1,14 @@
 // import { createRouteHandlerClient } from "@supabase/auth-helpers-nextjs";
-const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
+import Stripe from "stripe";
+
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || "");
 
 export async function GET() {
+  if (!stripe) {
+    return new Response(JSON.stringify({ error: "Stripe not loaded" }), {
+      status: 500,
+    });
+  }
   try {
     const products = await stripe.products.list({
       active: true,
@@ -9,7 +16,7 @@ export async function GET() {
     console.log(products, products.data[0].metadata);
     return new Response(
       JSON.stringify(
-        products.data.map((product: any) => ({
+        products.data.map((product: Stripe.Product) => ({
           ...product,
           ...product.metadata,
           weekPriceId: product.metadata.default_price,

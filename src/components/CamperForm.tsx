@@ -49,7 +49,7 @@ const CamperForm = ({
   }
 
   const selectedProgramId = camperForm.watch("program");
-  const selectedDaysOfWeek = camperForm.watch("daysOfWeek");
+  // const selectedDaysOfWeek = camperForm.watch("daysOfWeek");
 
   useEffect(() => {
     if (!selectedProgramId && programs.length) {
@@ -108,7 +108,7 @@ const CamperForm = ({
                             program.id === parseInt(e.currentTarget.value, 10)
                         );
                         field.onChange(parseInt(e.currentTarget.value), 10);
-                        newProgram &&
+                        if (newProgram) {
                           camperForm.setValue(
                             "daysOfWeek",
                             getDaysOfWeek(
@@ -116,6 +116,7 @@ const CamperForm = ({
                               newProgram?.endDate
                             )
                           );
+                        }
                       }}
                       className="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                       style={{ maxWidth: "100%" }}
