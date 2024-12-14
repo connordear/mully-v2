@@ -1,0 +1,13 @@
+@media print {
+  .page-block {
+    page-break-inside: avoid;
+  }
+  .page-break {
+    page-break-before: always;
+  }
+}
+
+h1 {
+  font-size: 1.15em;
+  margin: 0;
+}
