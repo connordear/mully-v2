@@ -23,6 +23,7 @@ const PaymentForm = ({
   couponCode,
   invalidForms,
 }: PaymentFormPropsType) => {
+  console.log(priceId);
   const fetchClientSecret = useCallback(() => {
     // Create a Checkout Session
     if (!priceId || invalidForms.length) return Promise.resolve("");
