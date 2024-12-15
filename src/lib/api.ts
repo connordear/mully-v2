@@ -1,18 +1,14 @@
-import { useQuery } from "@tanstack/react-query";
 import { Program } from "./types";
 
+const baseUrl =
+  process.env.NODE_ENV === "development"
+    ? "http://localhost:3000"
+    : "https://mully-v2.vercel.app";
+
 export async function getPrograms() {
-  const response = await fetch("/api/form");
+  const response = await fetch(baseUrl + "/api/form");
   const data = (await response.json()) as Program[];
   return data;
-}
-
-export function useGetPrograms() {
-  return useQuery({
-    queryKey: ["programs"],
-    queryFn: getPrograms,
-    select: (data) => data.filter((program) => program.isActive),
-  });
 }
 
 export async function getPaymentStatus(session_id: string) {

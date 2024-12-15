@@ -1,5 +1,6 @@
 import MullyForm from "@/components/MullyForm";
 import { Card, CardHeader } from "@/components/ui/card";
+import { getPrograms } from "@/lib/api";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -7,6 +8,7 @@ export const metadata: Metadata = {
 };
 
 export default async function Home() {
+  const programs = await getPrograms();
   return (
     <main className="md:flex min-h-screen flex-col items-center md:p-24 p-10 bg-gradient">
       <link rel="icon" href="/mully.png" sizes="any" />
@@ -17,7 +19,7 @@ export default async function Home() {
           </h1>
         </CardHeader>
       </Card>
-      <MullyForm />
+      <MullyForm programs={programs} />
     </main>
   );
 }

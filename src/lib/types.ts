@@ -1,7 +1,7 @@
 import { Database } from "./supabase";
 
 export type Program = {
-  id: number;
+  id: string;
   name: string;
   startDate: string;
   endDate: string;

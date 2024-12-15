@@ -1,6 +1,5 @@
 "use client";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { useGetPrograms } from "@/lib/api";
 import {
   CamperInfo,
   NO_SIBLING,
@@ -25,6 +24,7 @@ import { getDaysOfWeek } from "@/utils/dateUtils";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useAtom } from "jotai";
 
+import { Program } from "@/lib/types";
 import { useEffect, useMemo, useState } from "react";
 import { FormState, useForm, useFormState } from "react-hook-form";
 import CamperForm from "./CamperForm";
@@ -54,9 +54,11 @@ function getTabStyle(
   return "text-gray-500";
 }
 
-const MullyForm = () => {
-  const { data: programs } = useGetPrograms();
+type MullyFormProps = {
+  programs: Program[];
+};
 
+export default function MullyForm({ programs }: MullyFormProps) {
   const [camperData, setCamperData] = useAtom(camperInfoAtom);
   const camperForm = useForm<CamperInfo>({
     values: camperData,
@@ -104,7 +106,7 @@ const MullyForm = () => {
     setContactInfo(defaultEmergencyContactInfo);
     camperForm.reset({
       ...defaultCamperInfo,
-      program: programs ? programs[0].id : 0,
+      program: programs ? programs[0].id : "0",
     });
     medicalForm.reset();
     contactForm.reset();
@@ -282,6 +284,4 @@ const MullyForm = () => {
       </Popover>
     </Tabs>
   );
-};
-
-export default MullyForm;
+}

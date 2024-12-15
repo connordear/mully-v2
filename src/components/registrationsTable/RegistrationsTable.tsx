@@ -6,9 +6,8 @@ import {
   TableRow,
 } from "@/components/ui/table";
 
-import { useGetPrograms } from "@/lib/api";
 import { convertToTitleCase } from "@/lib/stringUtils";
-import { RegistrationInfo } from "@/lib/types";
+import { Program, RegistrationInfo } from "@/lib/types";
 import {
   ReactNode,
   RefObject,
@@ -48,6 +47,7 @@ const OMIT_COLUMNS = [
 ];
 
 type RegistrationsTablePropsType = {
+  programs: Program[] | undefined;
   registrations: RegistrationInfo[] | undefined;
 };
 
@@ -60,26 +60,28 @@ export type TableColumn<T> = {
 };
 
 const RegistrationsTable = ({
+  programs,
   registrations: data,
 }: RegistrationsTablePropsType) => {
   const registrationPrintRef = createRef<Element>();
   const medicalPrintRef = createRef<Element>();
   const [selectedTab, setSelectedTab] = useState<string>();
-  const { data: programs } = useGetPrograms();
   const selectedProgram = useMemo(
-    () => programs?.find((p) => selectedTab === p.name),
-    [programs]
+    () => programs?.find((p: Program) => selectedTab === p.name),
+    [programs, selectedTab]
   );
 
   const programRegistrationLookup = useMemo(() => {
     return (
-      data?.reduce((acc, row) => {
-        const oldRegs = acc[row.program.name] ?? [];
-        acc[row.program.name] = [...oldRegs, row];
+      data?.reduce((acc, row, i) => {
+        const programName =
+          programs?.find((p) => p.id === row.program)?.name ?? `Program ${i}`;
+        const oldRegs = acc[programName] ?? [];
+        acc[programName] = [...oldRegs, row];
         return acc;
       }, {} as Record<string, RegistrationInfo[]>) ?? {}
     );
-  }, [data]);
+  }, [data, programs]);
 
   const programsTabs = useMemo(() => {
     return Object.keys(programRegistrationLookup).map((key) => ({

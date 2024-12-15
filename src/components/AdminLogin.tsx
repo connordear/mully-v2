@@ -1,5 +1,6 @@
 "use client";
 
+import { Program } from "@/lib/types";
 import { useMutation } from "@tanstack/react-query";
 import { useState } from "react";
 import RegistrationsTable from "./registrationsTable/RegistrationsTable";
@@ -12,7 +13,11 @@ function postLogin(password: string) {
   });
 }
 
-const AdminLogin = () => {
+type AdminLoginProps = {
+  programs: Program[];
+};
+
+export default function AdminLogin({ programs }: AdminLoginProps) {
   const [loggedIn, setLoggedIn] = useState(false);
   const [password, setPassword] = useState("");
   const [data, setData] = useState([]);
@@ -67,7 +72,5 @@ const AdminLogin = () => {
     );
   }
 
-  return <RegistrationsTable registrations={data} />;
-};
-
-export default AdminLogin;
+  return <RegistrationsTable programs={programs} registrations={data} />;
+}

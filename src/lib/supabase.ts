@@ -107,7 +107,7 @@ export type Database = {
           parentSignature: string | null;
           paymentId: string | null;
           postalZip: string | null;
-          program: number | null;
+          program: string | null;
           regularMedicationsNotTakingAtCamp: string | null;
           siblingNameForDiscount: string | null;
           stateProv: string | null;

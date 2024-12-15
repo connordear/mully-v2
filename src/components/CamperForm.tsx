@@ -104,10 +104,9 @@ const CamperForm = ({
                       {...field}
                       onChange={(e) => {
                         const newProgram = programs.find(
-                          (program) =>
-                            program.id === parseInt(e.currentTarget.value, 10)
+                          (program) => program.id === e.currentTarget.value
                         );
-                        field.onChange(parseInt(e.currentTarget.value), 10);
+                        field.onChange(e.currentTarget.value);
                         if (newProgram) {
                           camperForm.setValue(
                             "daysOfWeek",
