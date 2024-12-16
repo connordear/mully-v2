@@ -23,7 +23,7 @@ export function useSelectedPrice(
   const selectedPrice = useMemo(() => {
     if (selectedProgram && selectedPriceId) {
       return (
-        selectedProgram.weekPrices.find(
+        selectedProgram.weekPrices?.find(
           (price) => price.id === selectedPriceId
         ) ??
         selectedProgram.dayPrices?.find((price) => price.id === selectedPriceId)
