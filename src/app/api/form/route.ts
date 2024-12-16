@@ -3,6 +3,7 @@ import { AllFormValues } from "@/lib/utils";
 import Stripe from "stripe";
 
 import { insertRegistration } from "@/lib/db";
+import { Program } from "@/lib/types";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || "");
 
@@ -21,25 +22,30 @@ export async function GET() {
     });
 
     // join the products and prices
-    const productsWithPrices = products.data.map((product: Stripe.Product) => ({
-      ...product,
-      ...product.metadata,
-      weekPriceId: product.metadata.default_price,
-      isActive: true,
-      prices: prices.data.filter(
-        (price: Stripe.Price) => price.product === product.id
-      ),
-    }));
-    return new Response(
-      JSON.stringify(
-        productsWithPrices.map((product: Stripe.Product) => ({
+    const productsWithPrices = products.data.map(
+      (product: Stripe.Product) =>
+        ({
           ...product,
           ...product.metadata,
-          weekPriceId: product.default_price,
+          defaultPriceId: product.default_price?.toString(),
+          weekPrices: prices.data
+            .filter((p) => !p.metadata.isDayPrice && p.product === product.id)
+            .map((p) => ({
+              id: p.id,
+              name: p.metadata.label,
+              isDayPrice: Boolean(p.metadata.isDayPrice),
+            })),
+          dayPrices: prices.data
+            .filter((p) => p.metadata.isDayPrice && p.product === product.id)
+            .map((p) => ({
+              id: p.id,
+              name: p.metadata.label,
+              isDayPrice: Boolean(p.metadata.isDayPrice),
+            })),
           isActive: true,
-        }))
-      )
+        } satisfies Partial<Program>)
     );
+    return new Response(JSON.stringify(productsWithPrices));
   } catch (error) {
     return new Response(JSON.stringify(error), {
       status: 500,

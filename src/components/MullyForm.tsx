@@ -19,7 +19,7 @@ import {
   medicalFormSchema,
   medicalInfoAtom,
 } from "@/lib/medical";
-import { useSelectedProgram } from "@/lib/programState";
+import { useSelectedPrice, useSelectedProgram } from "@/lib/programState";
 import { getDaysOfWeek } from "@/utils/dateUtils";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useAtom } from "jotai";
@@ -69,22 +69,22 @@ export default function MullyForm({ programs }: MullyFormProps) {
   const selectedDaysOfWeek = camperForm.watch("daysOfWeek");
   const siblingNameForDiscount = camperForm.watch("siblingNameForDiscount");
   const selectedProgram = useSelectedProgram(programs, camperForm);
+  const selectedPrice = useSelectedPrice(programs, camperForm);
 
   const purchaseInfo = useMemo(() => {
-    let priceId = selectedProgram?.weekPriceId;
+    const priceId = selectedPrice?.id ?? selectedProgram?.defaultPriceId ?? "0";
     let quantity = 1;
-    if (selectedProgram && selectedProgram.dayPriceId && selectedDaysOfWeek) {
+    if (selectedProgram && selectedProgram.dayPrices && selectedDaysOfWeek) {
       const possibleDaysOfWeek = getDaysOfWeek(
         selectedProgram?.startDate,
         selectedProgram?.endDate
       );
       if (possibleDaysOfWeek.length !== selectedDaysOfWeek.length) {
-        priceId = selectedProgram?.dayPriceId;
         quantity = selectedDaysOfWeek.length;
       }
     }
-    return { priceId, quantity };
-  }, [selectedProgram, selectedDaysOfWeek]);
+    return { quantity, priceId };
+  }, [selectedProgram, selectedDaysOfWeek, selectedPrice]);
 
   const [medicalData, setMedicalData] = useAtom(medicalInfoAtom);
   const medicalForm = useForm<MedicalInfo>({
@@ -107,6 +107,7 @@ export default function MullyForm({ programs }: MullyFormProps) {
     camperForm.reset({
       ...defaultCamperInfo,
       program: programs ? programs[0].id : "0",
+      priceId: programs ? programs[0].defaultPriceId : "0",
     });
     medicalForm.reset();
     contactForm.reset();

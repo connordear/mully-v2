@@ -1,12 +1,19 @@
 import { Database } from "./supabase";
 
+export type ProgramPrice = {
+  id: string;
+  name: string;
+  isDayPrice: boolean;
+};
+
 export type Program = {
   id: string;
   name: string;
   startDate: string;
   endDate: string;
-  weekPriceId: string;
-  dayPriceId?: string;
+  defaultPriceId?: string;
+  weekPrices: ProgramPrice[];
+  dayPrices?: ProgramPrice[];
   canApplySiblingDiscount: boolean;
   isActive: boolean;
 };

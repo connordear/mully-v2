@@ -119,7 +119,6 @@ export async function insertRegistration(values: AllFormValues) {
         `;
 
       const queryParams = emergencyContactValues.flat();
-      console.log(valuePlaceholders, queryParams);
 
       await client.query(queryText, queryParams);
     }
@@ -179,6 +178,5 @@ export async function getRegistrations() {
     (key) => registrationsMap[key]
   );
 
-  console.log(registrations);
   return registrations;
 }

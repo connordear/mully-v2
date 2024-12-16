@@ -13,3 +13,24 @@ export function useSelectedProgram(
   }, [programs, selectedProgramId]);
   return selectedProgram;
 }
+
+export function useSelectedPrice(
+  programs: Program[] | undefined,
+  camperForm: UseFormReturn<CamperInfo>
+) {
+  const selectedProgram = useSelectedProgram(programs, camperForm);
+  const selectedPriceId = camperForm.watch("priceId");
+  const selectedPrice = useMemo(() => {
+    if (selectedProgram && selectedPriceId) {
+      return (
+        selectedProgram.weekPrices.find(
+          (price) => price.id === selectedPriceId
+        ) ??
+        selectedProgram.dayPrices?.find((price) => price.id === selectedPriceId)
+      );
+    }
+    return undefined;
+  }, [selectedProgram, selectedPriceId]);
+
+  return selectedPrice;
+}

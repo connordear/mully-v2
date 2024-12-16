@@ -43,24 +43,53 @@ const CamperForm = ({
 }: CamperFormProps) => {
   const selectedProgram = useSelectedProgram(programs, camperForm);
   function onSubmitCamperInfo(values: CamperInfo) {
-    // Do something with the form values.
     // ✅ This will be type-safe and validated.
     onSubmit(values);
   }
 
   const selectedProgramId = camperForm.watch("program");
+  const selectedPriceId = camperForm.watch("priceId");
+  const selectedPrice = useMemo(() => {
+    if (selectedProgram && selectedPriceId) {
+      return (
+        selectedProgram.weekPrices.find(
+          (price) => price.id === selectedPriceId
+        ) ??
+        selectedProgram.dayPrices?.find((price) => price.id === selectedPriceId)
+      );
+    }
+    return undefined;
+  }, [selectedProgram, selectedPriceId]);
+
   // const selectedDaysOfWeek = camperForm.watch("daysOfWeek");
 
   useEffect(() => {
     if (!selectedProgramId && programs.length) {
       camperForm.setValue("program", programs[0].id);
+      camperForm.setValue("priceId", programs[0].defaultPriceId ?? "0");
     }
   }, [programs, selectedProgramId, camperForm]);
+
+  useEffect(() => {
+    if (selectedProgram && (!selectedPriceId || selectedPriceId === "0")) {
+      camperForm.setValue("priceId", selectedProgram.defaultPriceId ?? "0");
+    }
+  }, [camperForm, selectedPriceId, selectedProgram]);
+
+  const availablePrices = useMemo(() => {
+    if (selectedProgram) {
+      return [
+        ...selectedProgram.weekPrices,
+        ...(selectedProgram.dayPrices ?? []),
+      ];
+    }
+    return [];
+  }, [selectedProgram]);
 
   const availableDaysOfWeek = useMemo(() => {
     if (
       selectedProgram &&
-      selectedProgram.dayPriceId &&
+      selectedProgram.dayPrices &&
       selectedProgram.startDate &&
       selectedProgram.endDate
     ) {
@@ -136,7 +165,32 @@ const CamperForm = ({
                 </FormItem>
               )}
             />
-            {selectedProgram?.dayPriceId && (
+            {availablePrices.length > 1 && (
+              <FormField
+                name="priceId"
+                control={camperForm.control}
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Registration Options</FormLabel>
+                    <FormControl>
+                      <select
+                        {...field}
+                        className="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                        style={{ maxWidth: "100%" }}
+                      >
+                        {availablePrices.map((price) => (
+                          <option key={price.id} value={price.id}>
+                            {price.name}
+                          </option>
+                        ))}
+                      </select>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            )}
+            {selectedPrice?.isDayPrice && (
               <FormField
                 name="daysOfWeek"
                 control={camperForm.control}
