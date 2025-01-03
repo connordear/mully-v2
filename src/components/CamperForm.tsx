@@ -81,7 +81,7 @@ const CamperForm = ({
       return [
         ...selectedProgram.weekPrices,
         ...(selectedProgram.dayPrices ?? []),
-      ];
+      ].sort((a, b) => a.name.localeCompare(b.name));
     }
     return [];
   }, [selectedProgram]);
