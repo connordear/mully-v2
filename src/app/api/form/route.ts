@@ -19,7 +19,7 @@ export async function GET() {
     });
     const prices = await stripe.prices.list({
       active: true,
-      limit: 100,
+      limit: 50,
     });
 
     // join the products and prices
