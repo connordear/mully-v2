@@ -3,7 +3,7 @@ import { Program } from "./types";
 const baseUrl =
   process.env.NODE_ENV === "development"
     ? "http://localhost:3000"
-    : "https://mully-v2.vercel.app";
+    : "https://mulhurst-registration.vercel.app";
 
 export async function getPrograms() {
   const response = await fetch(baseUrl + "/api/form");
