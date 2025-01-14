@@ -66,11 +66,22 @@ const PaymentForm = ({
     );
   }
 
+  const isBeforeMay31st = new Date().getMonth() < 5;
+
   return (
     <Card>
       <CardHeader>
-        Submit your payment here. If your forms are complete but the payment
-        information doesn&apos;t load, please try reloading the page.
+        <p>
+          Submit your payment here. If your forms are complete but the payment
+          information doesn&apos;t load, please try reloading the page.
+        </p>
+        {isBeforeMay31st && (
+          <p>
+            Use&nbsp;
+            <code className="font-bold">EARLYBIRD10</code> for 10% off before
+            May 31st!
+          </p>
+        )}
       </CardHeader>
       <CardContent>
         <div id="checkout">

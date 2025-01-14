@@ -128,5 +128,43 @@ export const defaultCamperInfo: CamperInfo = {
 
 export const camperInfoAtom = atomWithStorage<CamperInfo>(
   "camperInfo",
-  defaultCamperInfo
+  defaultCamperInfo,
+  {
+    getItem(key, initialValue) {
+      const storedValue = localStorage.getItem(key);
+      try {
+        return camperFormSchema.parse(JSON.parse(storedValue ?? ""));
+      } catch {
+        return initialValue;
+      }
+    },
+    setItem(key, value) {
+      localStorage.setItem(key, JSON.stringify(value));
+    },
+    removeItem(key) {
+      localStorage.removeItem(key);
+    },
+    subscribe(key, callback, initialValue) {
+      if (
+        typeof window === "undefined" ||
+        typeof window.addEventListener === "undefined"
+      ) {
+        return () => null;
+      }
+      window.addEventListener("storage", (e) => {
+        if (e.storageArea === localStorage && e.key === key) {
+          let newValue;
+          try {
+            newValue = camperFormSchema.parse(JSON.parse(e.newValue ?? ""));
+          } catch {
+            newValue = initialValue;
+          }
+          callback(newValue);
+        }
+      });
+      return () => {
+        window.removeEventListener("storage", () => null);
+      };
+    },
+  }
 );
