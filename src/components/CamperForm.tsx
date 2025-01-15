@@ -61,8 +61,6 @@ const CamperForm = ({
     return undefined;
   }, [selectedProgram, selectedPriceId]);
 
-  // const selectedDaysOfWeek = camperForm.watch("daysOfWeek");
-
   useEffect(() => {
     if (!selectedProgramId && programs.length) {
       camperForm.setValue("program", programs[0].id);
@@ -97,6 +95,26 @@ const CamperForm = ({
     }
     return [];
   }, [selectedProgram]);
+
+  // const selectedDaysOfWeek = camperForm.watch("daysOfWeek");
+  // useEffect(() => {
+  //   if (!selectedDaysOfWeek) return;
+  //   if (selectedDaysOfWeek.length >= availableDaysOfWeek.length - 1) {
+  //     camperForm.setError("daysOfWeek", {
+  //       type: "max",
+  //       message: `You can only select up to ${
+  //         availableDaysOfWeek.length - 2
+  //       } days`,
+  //     });
+  //   } else if (selectedDaysOfWeek.length === 0) {
+  //     camperForm.setError("daysOfWeek", {
+  //       type: "min",
+  //       message: `Please select at least 1 day`,
+  //     });
+  //   } else {
+  //     camperForm.clearErrors("daysOfWeek");
+  //   }
+  // }, [availableDaysOfWeek, camperForm, selectedDaysOfWeek]);
 
   return (
     <Card>
@@ -137,13 +155,17 @@ const CamperForm = ({
                         );
                         field.onChange(e.currentTarget.value);
                         if (newProgram) {
-                          camperForm.setValue(
-                            "daysOfWeek",
-                            getDaysOfWeek(
-                              newProgram?.startDate,
-                              newProgram?.endDate
-                            )
-                          );
+                          if (newProgram?.dayPrices?.length) {
+                            camperForm.setValue(
+                              "daysOfWeek",
+                              getDaysOfWeek(
+                                newProgram?.startDate,
+                                newProgram?.endDate
+                              ).slice(0, -2)
+                            );
+                          } else {
+                            camperForm.setValue("daysOfWeek", undefined);
+                          }
                         }
                       }}
                       className="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
@@ -194,19 +216,27 @@ const CamperForm = ({
               <FormField
                 name="daysOfWeek"
                 control={camperForm.control}
-                render={({ field }) => (
+                render={({ field: { onChange, value, ...rest } }) => (
                   <FormItem>
                     <FormLabel>
-                      Days Camper Will Attend ({field.value?.length || 0} days
+                      Days Camper Will Attend ({value?.length || 0} days
                       selected)
                     </FormLabel>
+                    <FormDescription>
+                      Please select up to {availableDaysOfWeek.length - 2} days.
+                      If you wish to register for the whole week, please select
+                      the &apos;full-stay&apos; option.
+                    </FormDescription>
+                    <FormDescription>
+                      The camp will reach out closer to the summer to confirm
+                      your days.
+                    </FormDescription>
                     <FormControl>
                       <ToggleGroup
                         type="multiple"
-                        value={field.value}
-                        onValueChange={(v) => {
-                          field.onChange(v);
-                        }}
+                        {...rest}
+                        value={value}
+                        onValueChange={onChange}
                       >
                         {availableDaysOfWeek.map((dayOfWeek) => (
                           <ToggleGroupItem

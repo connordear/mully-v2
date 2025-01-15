@@ -20,7 +20,6 @@ import {
   medicalInfoAtom,
 } from "@/lib/medical";
 import { useSelectedPrice, useSelectedProgram } from "@/lib/programState";
-import { getDaysOfWeek } from "@/utils/dateUtils";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useAtom } from "jotai";
 
@@ -74,15 +73,18 @@ export default function MullyForm({ programs }: MullyFormProps) {
   const purchaseInfo = useMemo(() => {
     const priceId = selectedPrice?.id ?? selectedProgram?.defaultPriceId ?? "0";
     let quantity = 1;
-    if (selectedProgram && selectedProgram.dayPrices && selectedDaysOfWeek) {
-      const possibleDaysOfWeek = getDaysOfWeek(
-        selectedProgram?.startDate,
-        selectedProgram?.endDate
-      );
-      if (possibleDaysOfWeek.length !== selectedDaysOfWeek.length) {
-        quantity = selectedDaysOfWeek.length;
-      }
+    if (selectedPrice?.isDayPrice) {
+      quantity = selectedDaysOfWeek?.length ?? 1;
     }
+    // if (selectedProgram && selectedProgram.dayPrices && selectedDaysOfWeek) {
+    //   const possibleDaysOfWeek = getDaysOfWeek(
+    //     selectedProgram?.startDate,
+    //     selectedProgram?.endDate
+    //   );
+    //   if (possibleDaysOfWeek.length !== selectedDaysOfWeek.length) {
+    //     quantity = selectedDaysOfWeek.length;
+    //   }
+    // }
     return { quantity, priceId };
   }, [selectedProgram, selectedDaysOfWeek, selectedPrice]);
 

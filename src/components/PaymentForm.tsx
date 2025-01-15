@@ -75,6 +75,7 @@ const PaymentForm = ({
           Submit your payment here. If your forms are complete but the payment
           information doesn&apos;t load, please try reloading the page.
         </p>
+        <p>Please note there is a 2.9% fee added for payment processing.</p>
         {isBeforeMay31st && (
           <p>
             Use&nbsp;

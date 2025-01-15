@@ -75,7 +75,12 @@ export const addressSchema = z.object({
 export const camperFormSchema = z.object({
   program: z.string().min(1, { message: "Program is required" }),
   priceId: z.string().min(1, { message: "Price ID is required" }),
-  daysOfWeek: z.optional(z.array(z.string())),
+  daysOfWeek: z.optional(
+    z
+      .array(z.string())
+      .min(1, { message: "Please select at least 1 day" })
+      .max(2, { message: "You can only select up to 2 days" })
+  ),
   email: z.string().email(),
   firstName: z.string().min(1, { message: "First Name is required" }).max(50),
   lastName: z.string().min(1, { message: "Last Name is required" }).max(50),
