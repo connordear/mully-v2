@@ -78,7 +78,8 @@ export default function MullyForm({ programs }: MullyFormProps) {
     ) {
       camperForm.setValue("program", programs[0].id);
       camperForm.setValue("priceId", programs[0].defaultPriceId ?? "0");
-      camperForm.trigger();
+      camperForm.trigger("program");
+      camperForm.trigger("priceId");
     }
   }, [camperData, camperForm, programs]);
 
