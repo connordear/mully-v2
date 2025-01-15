@@ -248,6 +248,7 @@ export default function MullyForm({ programs }: MullyFormProps) {
             quantity={purchaseInfo.quantity}
             invalidForms={invalidForms}
             couponCode={
+              selectedProgram?.canApplySiblingDiscount &&
               siblingNameForDiscount !== NO_SIBLING
                 ? process.env.NEXT_PUBLIC_SIBLING_COUPON_CODE
                 : undefined

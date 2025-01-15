@@ -569,7 +569,7 @@ const CamperForm = ({
                     <FormControl>
                       <ToggleField
                         id="siblingNameForDiscount"
-                        fieldLabel="Please enter the sibling's name here. This will apply a $25 discount to your registration. You may apply this discount to each sibling's registration."
+                        fieldLabel="Please enter the sibling's name here. This will apply a $25 discount to your registration. You may apply this discount to each sibling's registration. (Not available for family camp)"
                         toggleLabel="I will be registering/have registered a sibling for camp."
                         noLabel="No"
                         offValue={NO_SIBLING}
