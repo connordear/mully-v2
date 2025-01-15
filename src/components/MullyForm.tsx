@@ -70,6 +70,18 @@ export default function MullyForm({ programs }: MullyFormProps) {
   const selectedProgram = useSelectedProgram(programs, camperForm);
   const selectedPrice = useSelectedPrice(programs, camperForm);
 
+  useEffect(() => {
+    if (
+      camperData.program &&
+      programs &&
+      !programs.find((p) => p.id === camperData.program)
+    ) {
+      camperForm.setValue("program", programs[0].id);
+      camperForm.setValue("priceId", programs[0].defaultPriceId ?? "0");
+      camperForm.trigger();
+    }
+  }, [camperData, camperForm, programs]);
+
   const purchaseInfo = useMemo(() => {
     const priceId = selectedPrice?.id ?? selectedProgram?.defaultPriceId ?? "0";
     let quantity = 1;
