@@ -80,7 +80,8 @@ const PaymentForm = ({
           <p>
             Use&nbsp;
             <code className="font-bold">EARLYBIRD10</code> for 10% off before
-            May 31st!
+            May 31st! (Note: if you have selected the sibling discount, this is
+            already applied)
           </p>
         )}
       </CardHeader>

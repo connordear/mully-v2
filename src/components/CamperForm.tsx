@@ -599,7 +599,7 @@ const CamperForm = ({
                     <FormControl>
                       <ToggleField
                         id="siblingNameForDiscount"
-                        fieldLabel="Please enter the sibling's name here. This will apply a $25 discount to your registration. You may apply this discount to each sibling's registration. (Not available for family camp)"
+                        fieldLabel="Please enter the sibling's name here. This will apply a 5% discount to your registration. You may apply this discount to each sibling's registration. If you are applying before May 31st, the discount will include both early bird 10% discount and the 5% discount."
                         toggleLabel="I will be registering/have registered a sibling for camp."
                         noLabel="No"
                         offValue={NO_SIBLING}
