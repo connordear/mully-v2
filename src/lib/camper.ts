@@ -79,7 +79,7 @@ export const camperFormSchema = z.object({
     z
       .array(z.string())
       .min(1, { message: "Please select at least 1 day" })
-      .max(2, { message: "You can only select up to 2 days" })
+      .max(4, { message: "You can only select up to 4 days" })
   ),
   email: z.string().email(),
   firstName: z.string().min(1, { message: "First Name is required" }).max(50),
