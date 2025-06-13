@@ -12,6 +12,17 @@ export async function insertRegistration(values: AllFormValues) {
   const client = await pool.connect();
   try {
     await client.query("BEGIN");
+
+    // check if the registration already exists
+    const { rows } = await client.query(
+      `SELECT * FROM registrations WHERE "paymentId" = $1`,
+      [values.sessionId]
+    );
+
+    if (rows.length > 0) {
+      return rows[0].id;
+    }
+
     const {
       rows: [{ id: registrationId }],
     } = await client.query(
