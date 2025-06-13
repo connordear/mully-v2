@@ -130,8 +130,7 @@ const RegistrationsTable = ({
     {
       key: "firstName",
       header: "Name",
-      render: (row: RegistrationInfo) =>
-        `${row.paymentId} - ${row.firstName} ${row.lastName}`,
+      render: (row: RegistrationInfo) => `${row.firstName} ${row.lastName}`,
     },
     {
       key: "email",
