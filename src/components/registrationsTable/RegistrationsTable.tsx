@@ -72,15 +72,22 @@ const RegistrationsTable = ({
   );
 
   const programRegistrationLookup = useMemo(() => {
-    return (
+    const lookup =
       data?.reduce((acc, row, i) => {
         const programName =
           programs?.find((p) => p.id === row.program)?.name ?? `Program ${i}`;
         const oldRegs = acc[programName] ?? [];
+
+        // check if the registration already exists
+        if (oldRegs.some((r) => r.paymentId === row.paymentId)) {
+          return acc;
+        }
+
         acc[programName] = [...oldRegs, row];
         return acc;
-      }, {} as Record<string, RegistrationInfo[]>) ?? {}
-    );
+      }, {} as Record<string, RegistrationInfo[]>) ?? {};
+
+    return lookup;
   }, [data, programs]);
 
   const programsTabs = useMemo(() => {
@@ -123,7 +130,8 @@ const RegistrationsTable = ({
     {
       key: "firstName",
       header: "Name",
-      render: (row: RegistrationInfo) => `${row.firstName} ${row.lastName}`,
+      render: (row: RegistrationInfo) =>
+        `${row.paymentId} - ${row.firstName} ${row.lastName}`,
     },
     {
       key: "email",
@@ -267,18 +275,6 @@ const RegistrationsTable = ({
         <Button onClick={() => reactToPrintFnMedical()}>
           Print Medical Info
         </Button>
-        {/* <ReactToPrint
-          documentTitle={selectedProgram?.name}
-          trigger={() => <Button>Print Camper Info</Button>}
-          content={() => registrationPrintRef.current}
-          pageStyle={"@page { size: auto; margin; }"}
-        />
-        <ReactToPrint
-          documentTitle={selectedProgram?.name}
-          trigger={() => <Button>Print Medical Info</Button>}
-          content={() => medicalPrintRef.current}
-          pageStyle={"@page { size: auto; margin; }"}
-        /> */}
       </div>
       <div
         style={{
