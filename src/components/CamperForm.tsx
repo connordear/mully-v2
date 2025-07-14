@@ -20,7 +20,7 @@ import {
 } from "@/lib/camper";
 import { useSelectedProgram } from "@/lib/programState";
 import { Program } from "@/lib/types";
-import { getDaysOfWeek } from "@/utils/dateUtils";
+import { getDaysOfWeek, getPreviousWednesday } from "@/utils/dateUtils";
 import { Label } from "@radix-ui/react-label";
 import { useEffect, useMemo } from "react";
 import { UseFormReturn } from "react-hook-form";
@@ -146,6 +146,7 @@ const CamperForm = ({
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Program</FormLabel>
+                  <FormDescription>Online registration will close the Wednesday before the camp starts. Please contact the <a className="underline" href="mailto:office@mulhurstcamp.ca">camp administration</a> if you have any questions.</FormDescription>
                   <FormControl>
                     <select
                       {...field}
@@ -177,6 +178,7 @@ const CamperForm = ({
                           value={program.id}
                           style={{ maxWidth: "100%" }}
                           className="text-wrap"
+                          disabled={program.startDate ? new Date() > getPreviousWednesday(new Date(program.startDate)) : false}
                         >
                           {program.name}
                         </option>
